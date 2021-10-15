@@ -42,10 +42,75 @@ class Product(models.Model):
 
 
 class CustomerAddress(models.Model):
-    customer_id = models.IntegerField(blank=False, null=False)
+    customerId = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=False, null=False)
     location = models.CharField(max_length=100, blank=True, null=False)
     pin = models.IntegerField(blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
+class Order(models.Model):
+    customerId = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=False, null=False)
+    orderNumber = models.CharField(max_length=20, blank=False, null=True)
+    cost = models.IntegerField(blank=False, null=False)
+    status = models.CharField(max_length=50, null=False, blank=True)
+    shippingCost = models.IntegerField(blank=True, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class OrderProduct(models.Model):
+    productId = models.ForeignKey(Product, on_delete=models.CASCADE, blank=False, null=True)
+    orderId = models.ForeignKey(Order, on_delete=models.CASCADE, blank=False, null=True)
+    quantity = models.CharField(max_length=20, blank=False, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Shipping(models.Model):
+    orderId = models.ForeignKey(Order, on_delete=models.CASCADE, blank=False, null=True)
+    customerAddressId = models.ForeignKey(CustomerAddress, on_delete=models.CASCADE, blank=False, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Payment(models.Model):
+    mode = models.CharField(max_length=10, blank=False, null=False)
+    amount = models.IntegerField(blank=False, null=False)
+    orderId = models.ForeignKey(Order, on_delete=models.CASCADE, blank=False, null=True)
+    invoiceNumber = models.CharField(max_length=10, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Review(models.Model):
+    # rating  = models.
+    message = models.TextField()
+    productId = models.ForeignKey(Product, on_delete=models.CASCADE, blank=False, null=True)
+    customerId = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Wishlist(models.Model):
+    productId = models.ForeignKey(Product, on_delete=models.CASCADE, blank=False, null=True)
+    customerId = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Offer(models.Model):
+    productId = models.ForeignKey(Product, on_delete=models.CASCADE, blank=False, null=True)
+    offerAmount = models.IntegerField(blank=False, null=False)
+    startDate = models.DateTimeField(blank=False, null=True)
+    endDate = models.DateTimeField(blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Voucher(models.Model):
+    tag = models.CharField(max_length=50, blank=True, null=True)
+    productId = models.ForeignKey(Product, on_delete=models.CASCADE, blank=False, null=True)
+    amountDeducted = models.IntegerField(default=0, blank=True, null=False)
+    status = models.CharField(max_length=50, null=False, blank=True)
+    limit = models.DateTimeField(blank=False, null=False)

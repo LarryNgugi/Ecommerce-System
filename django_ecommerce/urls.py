@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django_ecommerce import views
 from django.urls import path
+from django.urls.conf import include
+
+
+staff_patterns = [
+    path('',views.dashboard, name="staff"),
+]
+
 
 urlpatterns = [
+    path('staff/',include(staff_patterns)),
     path('', views.home, name='home'),
+
 ]

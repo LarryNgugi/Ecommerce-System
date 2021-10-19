@@ -7,3 +7,11 @@ def home(request):
     }
 
     return render(request, "home.html", context)
+
+
+def dashboard(request):
+
+    context = {
+    }
+
+    return render(request, "django_ecommerce/admin/dashboard.html", context)
